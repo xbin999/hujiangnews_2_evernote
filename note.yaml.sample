@@ -1,0 +1,5 @@
+config:
+    ver: 1.0
+    dir: /tmp/articles
+    libpath: /Users/yangbin/src/evernote-sdk-ruby/lib # evernote-sdk-ruby lib path
+    authToken: # To get a developer token, visit https://sandbox.evernote.com/api/DeveloperToken.action

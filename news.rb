@@ -30,19 +30,19 @@ user_regexp2 = %r{
 	翻译内容：\g<article_body>[{原文链接}|{参考译文}]
 }x
 
-config = YAML.load_file("note.yaml")
+config = YAML.load_file("#{dir2}/note.yaml")
 filedir = config["config"]["dir"]
 	
 r = crawler( http, uri.request_uri, user_regexp)
 if r
 	puts "The newst article is: #{r[:article_id]}, #{r[:article_date]}, #{r[:article_title]}, #{r[:article_url]}"
-	filename = "#{filedir}#{r[:article_id]}_#{r[:article_date]}_#{r[:article_title]}.txt"
+	filename = "#{filedir}/#{r[:article_id]}_#{r[:article_date]}_#{r[:article_title]}.txt"
 
 	if not FileTest::exist?(filename)
 		r2 = crawler( http, r[:article_url] + "/", user_regexp2)
 		article = r2[:article_body].gsub(/[[:cntrl:]]/,"").gsub(/\'javascript:[\u0000-\uffff]+?\'/,"\'").gsub(/\<br\>/,"\n").gsub(/\<[\u0000-\uffff]*?\>/,"")
 		article = "http://bulo.hujiang.com#{r[:article_url]}\n" + article
 		savefile( filename, article)
-		savefile( "#{filedir}.write", "#{r[:article_id]}_#{r[:article_date]}_#{r[:article_title]}.txt")
+		savefile( "#{filedir}/.write", "#{r[:article_id]}_#{r[:article_date]}_#{r[:article_title]}.txt")
 	end
 end 

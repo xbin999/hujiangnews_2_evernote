@@ -21,26 +21,26 @@ require "fileutil.rb"
 
 # Get configurations from YAML file
 require "yaml"
-config = YAML.load_file("note.yaml")
+config = YAML.load_file("#{dir2}/note.yaml")
 libpath = config["config"]["libpath"]
 filedir = config["config"]["dir"]
 authToken = config["config"]["authToken"]
 
 # Read data if the file is newer.
-write_id = loadfile("#{filedir}.write").gsub(/\n/,"")
-read_id = loadfile("#{filedir}.read").gsub(/\n/,"")
+write_id = loadfile("#{filedir}/.write").gsub(/\n/,"")
+read_id = loadfile("#{filedir}/.read").gsub(/\n/,"")
 if write_id <= read_id
   puts "#{write_id} has been uploaded, do nothing."
   exit(0)
 end
-filename = "#{filedir}#{write_id}"
+filename = "#{filedir}/#{write_id}"
 text = loadfile(filename)
 
 # Add the Thrift & Evernote Ruby libraries to the load path.
 dir = File.expand_path("#{libpath}")
-$LOAD_PATH.push("#{dir}/../../lib")
-$LOAD_PATH.push("#{dir}/../../lib/thrift")
-$LOAD_PATH.push("#{dir}/../../lib/Evernote/EDAM")
+$LOAD_PATH.push("#{dir}")
+$LOAD_PATH.push("#{dir}/thrift")
+$LOAD_PATH.push("#{dir}/Evernote/EDAM")
 
 require "thrift/types"
 require "thrift/struct"
@@ -53,7 +53,6 @@ require "Evernote/EDAM/user_store_constants.rb"
 require "Evernote/EDAM/note_store"
 require "Evernote/EDAM/limits_constants.rb"
 
-# To get a developer token, visit https://sandbox.evernote.com/api/DeveloperToken.action
 evernoteHost = "www.evernote.com"
 userStoreUrl = "https://#{evernoteHost}/edam/user"
 
@@ -90,5 +89,5 @@ note.tagNames = ["english", "translation", "21days"]
 createdNote = noteStore.createNote(authToken, note)
 
 # Write flag file.
-savefile( "#{filedir}.read", write_id)
+savefile( "#{filedir}/.read", write_id)
 puts "Successfully created a new note with GUID: #{createdNote.guid}"
